@@ -1,30 +1,14 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import List from './components/List';
 import Form from './components/Form';
-import {Sub} from './types'
-
-
-const INITIAL_STATE = [
-{
-  nick:'dapelu',
-  subMonths: 3,
-  avatar: 'https://i.pravatar.cc/150?u=dapelu',
-  description: 'Dapelu a veces hace de programador.',
-},
-{
-  nick:'dapelu',
-  subMonths: 2,
-  avatar: 'https://i.pravatar.cc/150?u=sergio_serrano',
-}
-];
-
+import { Sub, SubsResponseFromApi } from './types'
 
 
 interface AppState {
   subs: Sub[]
   newSubNum: number
-  string: string 
+  string: string
 }
 
 
@@ -32,17 +16,55 @@ function App() {
 
   const [subs, setSubs] = useState<AppState["subs"]>([])
   const [newSubNum, setNewSubNum] = useState<AppState["newSubNum"]>(0)
+  const divRef = useRef<HTMLDivElement>(null)
 
-  
-  useEffect( () => {
-    setSubs(INITIAL_STATE)
+
+  useEffect(() => {
+    const fetchSubs = (): Promise<SubsResponseFromApi> => {
+      return fetch('https://dummyjson.com/users?limit=5').then(res => res.json());
+      
+    }
+
+    const mapFromApiToSubs = (apiResponse: SubsResponseFromApi): Array<Sub> => {
+      return apiResponse.users.map(subFromApi => {
+        const {
+          username: nick,
+          age: subMonths,
+          image: avatar,
+          lastName: description } = subFromApi
+
+        return {
+          nick,
+          description,
+          avatar,
+          subMonths
+        }
+      })
+    }
+
+    fetchSubs()
+      .then(apiSubs => {
+        console.log(apiSubs)
+        const subs = mapFromApiToSubs(apiSubs)
+        setSubs(subs)
+      })
+
+
   }, [])
 
+  const handleNewSub = (newSub: Sub): void => {
+    setSubs(subs => [...subs, newSub])
+    setNewSubNum(n => n + 1)
+  }
+
   return (
-    <div className="App">
+    <div className="App" ref={divRef}>
+      
       <h1>midu subs</h1>
       <List subs={subs} string='-'/>
-      <Form onNewSub={setSubs}/>
+      New Subs: {newSubNum}
+      <Form onNewSub={handleNewSub}/>
+  
     </div>
   );
 }
