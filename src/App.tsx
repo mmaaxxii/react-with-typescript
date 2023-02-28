@@ -3,6 +3,7 @@ import './App.css';
 import List from './components/List';
 import Form from './components/Form';
 import { Sub, SubsResponseFromApi } from './types'
+import axios from 'axios';
 
 
 interface AppState {
@@ -20,8 +21,12 @@ function App() {
 
 
   useEffect(() => {
-    const fetchSubs = (): Promise<SubsResponseFromApi> => {
-      return fetch('https://dummyjson.com/users?limit=5').then(res => res.json());
+    const fetchSubs = () => {   
+      //{/*return fetch('https://dummyjson.com/users?limit=5').then(res => res.json());*/}
+      return axios
+      .get<SubsResponseFromApi>('https://dummyjson.com/users?limit=5')
+      .then(res => res.data);
+
       
     }
 
@@ -43,13 +48,9 @@ function App() {
     }
 
     fetchSubs()
-      .then(apiSubs => {
-        console.log(apiSubs)
-        const subs = mapFromApiToSubs(apiSubs)
-        setSubs(subs)
-      })
-
-
+      .then(mapFromApiToSubs)
+        .then(setSubs)
+      
   }, [])
 
   const handleNewSub = (newSub: Sub): void => {

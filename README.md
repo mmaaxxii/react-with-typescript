@@ -1,15 +1,18 @@
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+I worked with Typescript, interfaces, axios, fetch, Json mapping.  
 
-## Available Scripts
+## Install requeriments
 
 In the project directory, you can run:
 
-### `npm start`
+### `npm i`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### `npm install axios -E`
+
+This app was create with the help of the vid bellow.\
+Ref [midudev channel](https://www.youtube.com/watch?v=15VKbky2gB4&t=5712s) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
